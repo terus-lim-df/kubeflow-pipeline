@@ -1,0 +1,31 @@
+name: Merge csv
+implementation:
+  container:
+    image: python:3.7
+    command:
+    - sh
+    - -c
+    - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
+      'pandas==1.1.4' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet
+      --no-warn-script-location 'pandas==1.1.4' --user) && "$0" "$@"
+    - sh
+    - -ec
+    - |
+      program_path=$(mktemp)
+      printf "%s" "$0" > "$program_path"
+      python3 -u "$program_path" "$@"
+    - |
+      def merge_csv():
+          import pandas as pd
+
+          s = pd.Series([4, 2, 0, 8], name='legs')
+          print(s.sum())
+
+          print("DONE PIPE")
+
+      import argparse
+      _parser = argparse.ArgumentParser(prog='Merge csv', description='')
+      _parsed_args = vars(_parser.parse_args())
+
+      _outputs = merge_csv(**_parsed_args)
+    args: []

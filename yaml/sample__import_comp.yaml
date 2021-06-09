@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: file-passing-pipelines-
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.4.0, pipelines.kubeflow.org/pipeline_compilation_time: '2021-05-27T18:52:59.067500',
+    pipelines.kubeflow.org/pipeline_spec: '{"name": "File passing pipelines"}'}
+  labels: {pipelines.kubeflow.org/kfp_sdk_version: 1.4.0}
+spec:
+  entrypoint: file-passing-pipelines
+  templates:
+  - name: file-passing-pipelines
+    dag:
+      tasks:
+      - {name: merge-csv, template: merge-csv}
+  - name: merge-csv
+    container:
+      args: []
+      command:
+      - sh
+      - -c
+      - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
+        'pandas==1.1.4' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install
+        --quiet --no-warn-script-location 'pandas==1.1.4' --user) && "$0" "$@"
+      - sh
+      - -ec
+      - |
+        program_path=$(mktemp)
+        printf "%s" "$0" > "$program_path"
+        python3 -u "$program_path" "$@"
+      - |
+        def merge_csv():
+            import pandas as pd
+
+            s = pd.Series([4, 2, 0, 8], name='legs')
+            print(s.sum())
+
+            print("DONE PIPE")
+
+        import argparse
+        _parser = argparse.ArgumentParser(prog='Merge csv', description='')
+        _parsed_args = vars(_parser.parse_args())
+
+        _outputs = merge_csv(**_parsed_args)
+      image: python:3.7
+    metadata:
+      annotations: {pipelines.kubeflow.org/component_spec: '{"implementation": {"container":
+          {"args": [], "command": ["sh", "-c", "(PIP_DISABLE_PIP_VERSION_CHECK=1 python3
+          -m pip install --quiet --no-warn-script-location ''pandas==1.1.4'' || PIP_DISABLE_PIP_VERSION_CHECK=1
+          python3 -m pip install --quiet --no-warn-script-location ''pandas==1.1.4''
+          --user) && \"$0\" \"$@\"", "sh", "-ec", "program_path=$(mktemp)\nprintf
+          \"%s\" \"$0\" > \"$program_path\"\npython3 -u \"$program_path\" \"$@\"\n",
+          "def merge_csv():\n    import pandas as pd\n\n    s = pd.Series([4, 2, 0,
+          8], name=''legs'')\n    print(s.sum())\n\n    print(\"DONE PIPE\")\n\nimport
+          argparse\n_parser = argparse.ArgumentParser(prog=''Merge csv'', description='''')\n_parsed_args
+          = vars(_parser.parse_args())\n\n_outputs = merge_csv(**_parsed_args)\n"],
+          "image": "python:3.7"}}, "name": "Merge csv"}', pipelines.kubeflow.org/component_ref: '{"digest":
+          "2f4b760dfe7452f6c5c01fe0c85626a21bf547a34f675cf6123fbef60889e5c7", "url":
+          "https://raw.githubusercontent.com/L-Thirat/kubeflow_pipeline/main/component.yaml"}'}
+  arguments:
+    parameters: []
+  serviceAccountName: pipeline-runner
