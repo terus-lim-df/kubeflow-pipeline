@@ -6,6 +6,11 @@ implementation:
     image: python:3.7
     command:
     - sh
+    - -c
+    - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
+      'os' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
+      'os' --user) && "$0" "$@"
+    - sh
     - -ec
     - |
       program_path=$(mktemp)
@@ -13,6 +18,7 @@ implementation:
       python3 -u "$program_path" "$@"
     - |
       def read_csv(i_file):
+          import os
           os.system('export i_file=' + i_file + '; embulk run /home/minikf/embulk/config.yml.liquid')
 
       import argparse

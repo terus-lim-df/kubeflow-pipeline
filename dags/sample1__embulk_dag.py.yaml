@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
   generateName: my-pipeline-
-  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.4.0, pipelines.kubeflow.org/pipeline_compilation_time: '2021-06-11T23:21:28.594363',
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.4.0, pipelines.kubeflow.org/pipeline_compilation_time: '2021-06-11T23:29:40.211750',
     pipelines.kubeflow.org/pipeline_spec: '{"description": "My machine learning pipeline",
       "inputs": [{"name": "file_path"}], "name": "My pipeline"}'}
   labels: {pipelines.kubeflow.org/kfp_sdk_version: 1.4.0}
@@ -32,7 +32,7 @@ spec:
         python3 -u "$program_path" "$@"
       - |
         def read_csv(i_file):
-            os.system('export i_file=' + i_file + '; embulk run /path_to_liquid_file/load_sample.yml.liquid')
+            os.system('export i_file=' + i_file + '; embulk run /home/minikf/embulk/config.yml.liquid')
 
         import argparse
         _parser = argparse.ArgumentParser(prog='Read csv', description='')
@@ -49,12 +49,12 @@ spec:
           {"args": ["--i-file", {"inputValue": "i_file"}], "command": ["sh", "-ec",
           "program_path=$(mktemp)\nprintf \"%s\" \"$0\" > \"$program_path\"\npython3
           -u \"$program_path\" \"$@\"\n", "def read_csv(i_file):\n    os.system(''export
-          i_file='' + i_file + ''; embulk run /path_to_liquid_file/load_sample.yml.liquid'')\n\nimport
+          i_file='' + i_file + ''; embulk run /home/minikf/embulk/config.yml.liquid'')\n\nimport
           argparse\n_parser = argparse.ArgumentParser(prog=''Read csv'', description='''')\n_parser.add_argument(\"--i-file\",
           dest=\"i_file\", type=str, required=True, default=argparse.SUPPRESS)\n_parsed_args
           = vars(_parser.parse_args())\n\n_outputs = read_csv(**_parsed_args)\n"],
           "image": "python:3.7"}}, "inputs": [{"name": "i_file"}], "name": "Read csv"}',
-        pipelines.kubeflow.org/component_ref: '{"digest": "bec602a7311618be4f0373297385636a575effa9b455c02d652289ef2379e617",
+        pipelines.kubeflow.org/component_ref: '{"digest": "8cc454965c0ee7ba1f52867d8b06fb4f41c6ecf74b9b7e6f873c6064885d0905",
           "url": "https://raw.githubusercontent.com/terus-lim-df/kubeflow-pipeline/main/sample1__embulk_component.yaml"}',
         pipelines.kubeflow.org/arguments.parameters: '{"i_file": "{{inputs.parameters.file_path}}"}'}
   arguments:
