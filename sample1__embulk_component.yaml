@@ -13,7 +13,7 @@ implementation:
       python3 -u "$program_path" "$@"
     - |
       def read_csv(i_file):
-          os.system('export i_file=' + i_file + '; embulk run /path_to_liquid_file/load_sample.yml.liquid')
+          os.system('export i_file=' + i_file + '; embulk run /home/minikf/embulk/config.yml.liquid')
 
       import argparse
       _parser = argparse.ArgumentParser(prog='Read csv', description='')

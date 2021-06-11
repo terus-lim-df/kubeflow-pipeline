@@ -18,4 +18,4 @@ def file_passing_pipelines(file_path):
 
 if __name__ == '__main__':
     # Compiling the pipeline
-    kfp.compiler.Compiler().compile(file_passing_pipelines, "yaml/" + __file__.split("/")[-1] + '.yaml')
+    kfp.compiler.Compiler().compile(file_passing_pipelines, "dags/" + __file__.split("/")[-1] + '.yaml')
