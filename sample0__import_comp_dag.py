@@ -2,7 +2,7 @@
 
 import kfp
 from kfp.components import func_to_container_op, InputPath, OutputPath
-import_op = kfp.components.load_component_from_url("https://raw.githubusercontent.com/terus-lim-df/kubeflow-pipeline/main/sample__component.yaml")
+import_op = kfp.components.load_component_from_url("https://raw.githubusercontent.com/terus-lim-df/kubeflow-pipeline/main/sample0__component.yaml")
 
 
 # Combining all pipelines together in a single pipeline

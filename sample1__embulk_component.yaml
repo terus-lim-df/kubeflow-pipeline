@@ -1,0 +1,26 @@
+name: Read csv
+inputs:
+- {name: i_file}
+implementation:
+  container:
+    image: python:3.7
+    command:
+    - sh
+    - -ec
+    - |
+      program_path=$(mktemp)
+      printf "%s" "$0" > "$program_path"
+      python3 -u "$program_path" "$@"
+    - |
+      def read_csv(i_file):
+          os.system('export i_file=' + i_file + '; embulk run /path_to_liquid_file/load_sample.yml.liquid')
+
+      import argparse
+      _parser = argparse.ArgumentParser(prog='Read csv', description='')
+      _parser.add_argument("--i-file", dest="i_file", type=str, required=True, default=argparse.SUPPRESS)
+      _parsed_args = vars(_parser.parse_args())
+
+      _outputs = read_csv(**_parsed_args)
+    args:
+    - --i-file
+    - {inputValue: i_file}
